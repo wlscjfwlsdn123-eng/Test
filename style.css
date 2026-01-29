@@ -189,6 +189,11 @@ body {
     margin-top: 6px;
 }
 
+.panel-actions {
+    display: grid;
+    gap: 8px;
+}
+
 .tips {
     margin-top: 20px;
     padding: 14px;

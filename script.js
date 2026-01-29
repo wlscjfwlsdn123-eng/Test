@@ -60,19 +60,24 @@ function timeToIndex(time) {
 }
 
 function saveCourses() {
+  const courses = getCoursesFromDOM();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(courses));
+}
+
+function getCoursesFromDOM() {
   const courses = [];
   document.querySelectorAll(".course-block").forEach((el) => {
     courses.push({
-      name: el.dataset.name,
-      room: el.dataset.room,
-      professor: el.dataset.professor,
-      day: el.dataset.day,
-      start: el.dataset.start,
-      end: el.dataset.end,
-      color: el.dataset.color,
+      name: el.dataset.name || "",
+      room: el.dataset.room || "",
+      professor: el.dataset.professor || "",
+      day: el.dataset.day || "",
+      start: el.dataset.start || "",
+      end: el.dataset.end || "",
+      color: el.dataset.color || "",
     });
   });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(courses));
+  return courses;
 }
 
 function loadCourses() {
@@ -146,13 +151,80 @@ function escapeHtml(str) {
   });
 }
 
+function clearCoursesFromUI() {
+  document.querySelectorAll(".day-column").forEach((col) => {
+    col.innerHTML = "";
+  });
+}
+
+function exportCourses() {
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    courses: getCoursesFromDOM(),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `timetable-${payload.exportedAt.slice(0, 10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importCoursesFromData(data) {
+  const courses = Array.isArray(data) ? data : data && data.courses;
+  if (!Array.isArray(courses)) {
+    alert("가져오기 파일 형식이 올바르지 않습니다.");
+    return;
+  }
+  clearCoursesFromUI();
+  courses.forEach((course) => addCourse(course, false));
+  saveCourses();
+}
+
+function importCoursesFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      importCoursesFromData(data);
+    } catch (e) {
+      alert("파일을 읽는 중 오류가 발생했습니다.");
+      console.error(e);
+    }
+  };
+  reader.readAsText(file);
+}
+
 // 초기화 버튼
 const clearButton = document.getElementById("clearButton");
 if (clearButton) {
   clearButton.addEventListener("click", () => {
     if (!confirm("모든 강의를 삭제하시겠습니까?")) return;
-    document.querySelectorAll('.day-column').forEach(col => col.innerHTML = '');
+    clearCoursesFromUI();
     saveCourses();
+  });
+}
+
+const exportButton = document.getElementById("exportButton");
+if (exportButton) {
+  exportButton.addEventListener("click", exportCourses);
+}
+
+const importButton = document.getElementById("importButton");
+const importFile = document.getElementById("importFile");
+if (importButton && importFile) {
+  importButton.addEventListener("click", () => importFile.click());
+  importFile.addEventListener("change", (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    importCoursesFromFile(file);
+    event.target.value = "";
   });
 }
 

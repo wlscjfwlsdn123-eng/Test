@@ -101,6 +101,12 @@
                         <button type="button" id="clearButton" class="secondary">초기화</button>
                     </div>
 
+                    <div class="panel-actions" style="margin-top:10px">
+                        <button type="button" id="exportButton" class="secondary">시간표 내보내기</button>
+                        <button type="button" id="importButton" class="secondary">시간표 가져오기</button>
+                        <input type="file" id="importFile" accept="application/json" hidden="hidden"/>
+                    </div>
+
                     <div class="tips">
                         <h3>입력 팁</h3>
                         <ul>
@@ -108,7 +114,9 @@
                             <li>종료 시간이 시작 시간보다 늦어야 합니다.</li>
                             <li>겹치는 강의도 표시됩니다.</li>
                         </ul>
-                        <p style="margin-top:8px;color:#6b7280;font-size:13px">저장된 시간표는 브라우저에 보관됩니다. 초기화를 누르면 모든 강의가 삭제됩니다.</p>
+                        <p style="margin-top:8px;color:#6b7280;font-size:13px">
+                            저장된 시간표는 브라우저에 보관됩니다. 다른 브라우저에서 보려면 내보내기한 파일을 가져오세요.
+                        </p>
                     </div>
                 </aside>
             </section>
