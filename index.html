@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>2026년 1학기 길동의 시간표</title>
+        <link rel="stylesheet" href="style.css"/>
+    </head>
+    <body>
+        <main class="page">
+            <header class="hero">
+                <h1>2026년 1학기 길동의 시간표</h1>
+                <p>강의 정보를 입력하면 시간표에 바로 표시됩니다.</p>
+            </header>
+
+            <section class="layout">
+                <div class="timetable" aria-label="시간표">
+                    <div class="timetable-header">
+                        <div class="corner">시간</div>
+                        <div class="day">월</div>
+                        <div class="day">화</div>
+                        <div class="day">수</div>
+                        <div class="day">목</div>
+                        <div class="day">금</div>
+                    </div>
+                    <div class="timetable-body">
+                        <div class="time-column" id="timeColumn" aria-hidden="true"></div>
+                        <div class="days-grid" id="daysGrid">
+                            <div class="day-column" data-day="mon"></div>
+                            <div class="day-column" data-day="tue"></div>
+                            <div class="day-column" data-day="wed"></div>
+                            <div class="day-column" data-day="thu"></div>
+                            <div class="day-column" data-day="fri"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="panel">
+                    <h2>강의 추가</h2>
+                    <form id="courseForm">
+                        <label class="field">
+                            <span>강의명</span>
+                            <input type="text" id="courseName" placeholder="예: 자료구조" required="required"/>
+                        </label>
+
+                        <label class="field">
+                            <span>강의 장소</span>
+                            <input
+                                type="text"
+                                id="courseRoom"
+                                placeholder="예: 공학관 302"
+                                required="required"/>
+                        </label>
+
+                        <label class="field">
+                            <span>교수명</span>
+                            <input
+                                type="text"
+                                id="courseProfessor"
+                                placeholder="예: 김코딩"
+                                required="required"/>
+                        </label>
+
+                        <label class="field">
+                            <span>요일</span>
+                            <select id="courseDay" required="required">
+                                <option value="mon">월</option>
+                                <option value="tue">화</option>
+                                <option value="wed">수</option>
+                                <option value="thu">목</option>
+                                <option value="fri">금</option>
+                            </select>
+                        </label>
+
+                        <div class="field-row">
+                            <label class="field">
+                                <span>시작 시간</span>
+                                <select id="startTime" required="required"></select>
+                            </label>
+                            <label class="field">
+                                <span>종료 시간</span>
+                                <select id="endTime" required="required"></select>
+                            </label>
+                        </div>
+
+                        <label class="field">
+                            <span>색상</span>
+                            <select id="courseColor">
+                                <option value="#f39c12">오렌지</option>
+                                <option value="#27ae60">그린</option>
+                                <option value="#2980b9">블루</option>
+                                <option value="#8e44ad">퍼플</option>
+                                <option value="#e74c3c">레드</option>
+                            </select>
+                        </label>
+
+                        <button type="submit" class="primary">시간표에 추가</button>
+                    </form>
+
+                    <div style="margin-top:10px">
+                        <button type="button" id="clearButton" class="secondary">초기화</button>
+                    </div>
+
+                    <div class="tips">
+                        <h3>입력 팁</h3>
+                        <ul>
+                            <li>30분 단위로 시간 선택이 가능합니다.</li>
+                            <li>종료 시간이 시작 시간보다 늦어야 합니다.</li>
+                            <li>겹치는 강의도 표시됩니다.</li>
+                        </ul>
+                        <p style="margin-top:8px;color:#6b7280;font-size:13px">저장된 시간표는 브라우저에 보관됩니다. 초기화를 누르면 모든 강의가 삭제됩니다.</p>
+                    </div>
+                </aside>
+            </section>
+        </main>
+
+        <script src="script.js"></script>
+    </body>
+</html>
