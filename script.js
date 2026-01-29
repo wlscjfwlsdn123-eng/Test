@@ -93,14 +93,14 @@ function loadCourses() {
 
 function addCourse({ name, room, professor, day, start, end, color }, save = true) {
   const dayColumn = daysGrid.querySelector(`[data-day="${day}"]`);
-  if (!dayColumn) return;
+  if (!dayColumn) return false;
 
   const startIndex = timeToIndex(start);
   const endIndex = timeToIndex(end);
 
   if (startIndex === -1 || endIndex === -1 || endIndex <= startIndex) {
     alert("종료 시간이 시작 시간보다 늦어야 합니다.");
-    return;
+    return false;
   }
 
   const block = document.createElement("div");
@@ -136,6 +136,7 @@ function addCourse({ name, room, professor, day, start, end, color }, save = tru
   dayColumn.appendChild(block);
 
   if (save) saveCourses();
+  return true;
 }
 
 function escapeHtml(str) {
@@ -182,16 +183,34 @@ function importCoursesFromData(data) {
     alert("가져오기 파일 형식이 올바르지 않습니다.");
     return;
   }
+  const normalized = courses.map((course) => ({
+    name: course.name ?? course.courseName ?? "",
+    room: course.room ?? course.courseRoom ?? "",
+    professor: course.professor ?? course.courseProfessor ?? "",
+    day: course.day ?? course.weekday ?? "",
+    start: course.start ?? course.startTime ?? course.start_time ?? "",
+    end: course.end ?? course.endTime ?? course.end_time ?? "",
+    color: course.color ?? course.colorHex ?? "",
+  }));
   clearCoursesFromUI();
-  courses.forEach((course) => addCourse(course, false));
+  let addedCount = 0;
+  normalized.forEach((course) => {
+    if (addCourse(course, false)) addedCount += 1;
+  });
   saveCourses();
+  if (addedCount === 0) {
+    alert("가져온 강의가 없습니다. 요일/시간 형식을 확인해 주세요.");
+  } else {
+    alert(`${addedCount}개의 강의를 가져왔습니다.`);
+  }
 }
 
 function importCoursesFromFile(file) {
   const reader = new FileReader();
   reader.onload = () => {
     try {
-      const data = JSON.parse(reader.result);
+      const text = String(reader.result || "").replace(/^\uFEFF/, "");
+      const data = JSON.parse(text);
       importCoursesFromData(data);
     } catch (e) {
       alert("파일을 읽는 중 오류가 발생했습니다.");
